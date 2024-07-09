@@ -1,3 +1,5 @@
+import pyautogui
+import random
 import tkinter as tk
 
 x = 1800
@@ -6,15 +8,18 @@ x_size = 128
 y_size = 128
 
 
+
+
 def update():
-    frame = sleep
+    frame = image
     window.geometry(f'{x_size}x{y_size}+{x}+{y}')
     label.configure(image=frame)
 
 
+
 window = tk.Tk()
 
-sleep = tk.PhotoImage(file='cat128.png', format='png')
+image = tk.PhotoImage(file='cat128.png', format='png')
 
 # window configuration
 window.config(highlightbackground='grey')
