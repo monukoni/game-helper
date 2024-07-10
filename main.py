@@ -1,4 +1,5 @@
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QPoint
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap, QImage
 import sys
@@ -7,10 +8,17 @@ mascot_size = [128, 128]
 taskbar_size = 57
 
 class Window(QMainWindow):
-    def __init__(self, x=0, y=0):
+    def __init__(self):
         super().__init__()
 
-        self.setGeometry(x, y, *mascot_size)
+        screenSize = QtWidgets.QDesktopWidget().screenGeometry(-1)
+
+        self.currentPosition = QPoint(*[screenSize.width()-mascot_size[0],
+                                        screenSize.height()-mascot_size[1]-taskbar_size])
+
+        self.setGeometry(self.currentPosition.x(),
+                         self.currentPosition.y(),
+                         *mascot_size)
 
         # Налаштування вікна
         self.setWindowTitle('Steppy')
@@ -29,8 +37,16 @@ class Window(QMainWindow):
 
         self.show()
 
+    def mousePressEvent(self, event):
+        self.currentPosition = event.globalPos()
+
+    def mouseMoveEvent(self, event):
+        delta = QPoint(event.globalPos() - self.currentPosition)
+        self.move(self.x() + delta.x(), self.y() + delta.y())
+        self.currentPosition = event.globalPos()
+
 
 if __name__ == '__main__':
     App = QApplication(sys.argv)
-    window = Window(1920-mascot_size[0], 1080-mascot_size[1]-taskbar_size)
+    window = Window()
     sys.exit(App.exec())
