@@ -4,21 +4,25 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap, QImage
 import sys
 
-mascot_size = [128, 128]
-taskbar_size = 57
+
 
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        screenSize = QtWidgets.QDesktopWidget().screenGeometry(-1)
+        self.mascotSize = [128, 128]
+        
+        self.taskbarSize = (QDesktopWidget().screenGeometry().height() -
+                            QDesktopWidget().availableGeometry().height())
 
-        self.currentPosition = QPoint(*[screenSize.width()-mascot_size[0],
-                                        screenSize.height()-mascot_size[1]-taskbar_size])
+        self.screenSize = QtWidgets.QDesktopWidget().screenGeometry()
+
+        self.currentPosition = QPoint(*[self.screenSize.width()-self.mascotSize[0],
+                                        self.screenSize.height()-self.mascotSize[1]-self.taskbarSize])
 
         self.setGeometry(self.currentPosition.x(),
                          self.currentPosition.y(),
-                         *mascot_size)
+                         *self.mascotSize)
 
         # Налаштування вікна
         self.setWindowTitle('Steppy')
@@ -31,7 +35,7 @@ class Window(QMainWindow):
         # Ставимо зображення
         self.img = QLabel(self)
         transparent_img = QImage()
-        transparent_img.load(f'cat{mascot_size[0]}.png')
+        transparent_img.load(f'cat{self.mascotSize[0]}.png')
         self.img.setPixmap(QPixmap.fromImage(transparent_img))
         self.img.resize(self.width(), self.height())
 
