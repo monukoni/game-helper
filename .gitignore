@@ -39,6 +39,9 @@
 .idea/*.iml
 .idea/*.xml
 .idea/modules
+.idea/inspectionProfiles/*.xml
+.idea/*
+.idea/
 *.iml
 *.ipr
 
@@ -83,6 +86,8 @@ fabric.properties
 .venv
 env/
 .venv/
+.idea
+.idea/
 venv/
 ENV/
 env.bak/
