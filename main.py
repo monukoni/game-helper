@@ -46,7 +46,7 @@ class Window(QMainWindow):
             self.new_window.move(self.x()-int((self.new_window.width() - 128/1.5)), self.y()-120)
 
     def mousePressEvent(self, event: QtGui.QMouseEvent):
-        self.current_position = event.globalPos()
+
 
         if event.button() == QtCore.Qt.RightButton:
             if self.new_window is not None:
@@ -54,10 +54,11 @@ class Window(QMainWindow):
                     self.new_window = None
 
             if self.new_window is None:
-                self.popup_menu.set_pos(QPoint(event.globalPos()))
+                self.popup_menu.set_pos(QPoint(event.globalPos().x(),self.pos().y()))
                 self.popup_menu.show()
                 # self.new_window = SpeechBubble(self.x(), self.y())
                 # self.new_window.show()
+        self.current_position = event.globalPos()
 
     def mouseMoveEvent(self, event: QtGui.QMouseEvent):
         delta = QPoint(event.globalPos() - self.current_position)
@@ -115,7 +116,7 @@ class PopupMenu(QtWidgets.QMenu):
 
 
     def set_pos(self, point: QPoint):
-        self.setGeometry(point.x() - 200, point.y()-400, 100, 100)
+        self.setGeometry(point.x() - 100, point.y()-128, 100, 100)
 
 if __name__ == '__main__':
     App = QApplication(sys.argv)
