@@ -102,20 +102,50 @@ class PopupMenu(QtWidgets.QMenu):
         super(PopupMenu, self).__init__(parent)
         self.layout = QtWidgets.QVBoxLayout()
         self.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint)
+        # widgets = [
+        #     PopupButton("test 1", self),
+        #     PopupButton("test 2", self),
+        #     PopupButton("test 3", self),
+        #     PopupButton("test 4", self),
+        #     PopupButton("test 5", self)
+        # ]
         widgets = [
-            # QTextEdit
-            # QInputDialog
+            PopupButtonLabel("test 1", self),
+            PopupButtonLabel("test 2", self),
+            PopupButtonLabel("test 3", self),
+            PopupButtonLabel("test 4", self),
+            ExitButton("Exit", self)
         ]
         for widget in widgets:
-            self.layout.addWidget(widget())
+            self.layout.addWidget(widget)
+        self.layout.addStretch()
         self.setLayout(self.layout)
-        # self.setGeometry(self.currentPosition.x(),
-        #                  self.currentPosition.y(),
-        #                  *self.mascotSize)
-
 
     def set_pos(self, point: QPoint):
-        self.setGeometry(point.x() - 200, point.y()-400, 100, 100)
+        self.setGeometry(point.x(), point.y()-100, 100, 100)
+
+
+class PopupButton(QPushButton):
+    def __init__(self, text: str, parent=None):
+        super(PopupButton, self).__init__(parent)
+        self.setText(text)
+
+
+class PopupButtonLabel(QLabel):
+    def __init__(self, text: str, parent=None):
+        super(QLabel, self).__init__(parent)
+        self.setText(text)
+
+
+class ExitButton(PopupButtonLabel):
+    def __init__(self, text: str, parent=None):
+        super(PopupButtonLabel, self).__init__(text, parent)
+
+    def mousePressEvent(self, event, q_mouse_event = None):
+        sys.exit()
+
+
+
 
 if __name__ == '__main__':
     App = QApplication(sys.argv)
