@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtGui import QImage, QPixmap, QIcon
-from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt5.QtGui import QImage, QPixmap, QIcon, QFont
+from PyQt5.QtWidgets import QLabel, QMainWindow, QHBoxLayout, QWidget, QVBoxLayout
 from PyQt5.QtCore import Qt
 
 
@@ -16,6 +16,7 @@ class SpeechBubble(QtWidgets.QWidget):
 
         self.set_window_flags()
         self.set_image_background()
+        self.set_text("А ви знали що маніяки завжди підари?")
 
 
     def set_window_flags(self):
@@ -37,4 +38,19 @@ class SpeechBubble(QtWidgets.QWidget):
 
 
     def set_text(self, text):
-        ...
+        label = QtWidgets.QLabel(self)
+        # wlayout = QtWidgets.QVBoxLayout()
+        label.setText(text)
+        label.setFont(QFont('Arial', 10))
+        label.setWordWrap(True)
+
+        # label.setAlignment(Qt.AlignCenter)
+        # label.move(10, 10)
+        label.setGeometry(10, 10, 170, 130)
+        # layout.addWidget(label)
+
+        label.setAlignment(Qt.AlignCenter)
+
+
+
+

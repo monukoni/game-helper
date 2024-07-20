@@ -44,7 +44,9 @@
 .idea/
 *.iml
 *.ipr
-
+__pycache__/
+__pycache__
+__pycache__/*
 # CMake
 cmake-build-*/
 
@@ -57,6 +59,11 @@ cmake-build-*/
 # IntelliJ
 out/
 
+
+__pycache__/colors.cpython-312.pyc
+__pycache__/settings.cpython-312.pyc
+__pycache__/steppy.cpython-312.pyc
+__pycache__/*.pyc
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 

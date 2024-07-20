@@ -71,6 +71,9 @@ class Steppy(QMainWindow):
     def mousePressEvent(self, event):
         self.current_position = event.globalPos()
 
+
+
+
     def mouseMoveEvent(self, event: QMouseEvent):
         if event.buttons() == Qt.LeftButton:
             if self.speech_bubble.isVisible():
