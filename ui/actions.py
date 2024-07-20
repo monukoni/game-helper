@@ -12,6 +12,7 @@ def make_exit_action(app: QMainWindow):
 
 
 def make_open_settings_action(app: QMainWindow):
-    open_settings_action = QAction("Open settings", app)
+    open_settings_action = QAction("Open settings")
+    open_settings_action.triggered.connect(app.settings_window.show)
     return open_settings_action
 
