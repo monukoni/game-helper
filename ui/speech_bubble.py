@@ -2,16 +2,19 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtCore import Qt, QRect, QTimer
-
+from db.database import Database
 import random
 
-TIPS = ["Tip# 1", "Tip# 2", "Tip# 3", "Tip# 4", "Tip# 5", "Tip# 6", "Tip# 7", "Tip# 8", "Tip# 9"]
 MARGIN_TOP = 20
 
 
 class SpeechBubble(QtWidgets.QWidget):
     def __init__(self, app: QMainWindow):
         super().__init__()
+        database = Database()
+
+        self.TIPS = database.get_tips()
+
         self.app = app
         self.setFixedSize(200, 200)
         self.move(app.pos().x() - int(self.width() / 2),
@@ -20,7 +23,7 @@ class SpeechBubble(QtWidgets.QWidget):
         self.set_window_flags()
         # self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
         # self.set_image_background()
-        self.set_text(TIPS[0])
+        self.set_text(self.TIPS[0])
         self.timer = QTimer()
         self.timer.setInterval(self.app.settings.delay*1000)
         self.timer.timeout.connect(self.rotate_tips)
@@ -46,7 +49,7 @@ class SpeechBubble(QtWidgets.QWidget):
         self.label.resize(self.width(), self.height())
         painter = QtGui.QPainter(self.pixmap)
         painter.setPen(QtGui.QPen(QtGui.QColor("black")))
-        painter.setFont(QtGui.QFont("Arial", 18))
+        painter.setFont(QtGui.QFont("Arial", 8))
 
         # todo: create layout, create text, and dynamically set pixmap w/h based on text length
         rect: QRect = self.pixmap.rect()
@@ -58,7 +61,7 @@ class SpeechBubble(QtWidgets.QWidget):
 
     def rotate_tips(self):
         # todo: fix overlapping tips on pixmap
-        next_tip = random.choice(TIPS)
+        next_tip = random.choice(self.TIPS)
         self.set_text(next_tip)
 
     def closeEvent(self, event):
