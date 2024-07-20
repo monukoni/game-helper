@@ -37,6 +37,7 @@ class Steppy(QMainWindow):
         # Set all UI children windows
         self.add_children_windows()
         self.show()
+
         self.speech_bubble.show()
 
     def contextMenuEvent(self, event):
@@ -67,9 +68,17 @@ class Steppy(QMainWindow):
         self.img.setPixmap(QPixmap.fromImage(transparent_img))
         self.img.resize(self.width(), self.height())
 
+    def mousePressEvent(self, event):
+        self.current_position = event.globalPos()
+
     def mouseMoveEvent(self, event: QMouseEvent):
         if event.buttons() == Qt.LeftButton:
+            if self.speech_bubble.isVisible():
+                self.speech_bubble.move(self.x() - int(self.speech_bubble.width()/2),
+                                        self.y() - self.speech_bubble.height())
+
             delta = QPoint(event.globalPos() - self.current_position)
             self.move(self.x() + delta.x(), self.y() + delta.y())
             self.current_position = event.globalPos()
+
 
