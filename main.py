@@ -1,20 +1,34 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QPoint
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtWidgets import (
+    QDesktopWidget, QMainWindow, QMenu, QLabel, QApplication
+)
+from PyQt5.QtGui import QPixmap, QImage, QMouseEvent, QIcon
+from PyQt5.QtCore import Qt
 import sys
+from ui.actions import (
+    make_exit_action,
+    make_open_settings_action
+)
 
 
-class Window(QMainWindow):
+class Steppy(QMainWindow):
+
+    def contextMenuEvent(self, event):
+        menu = QMenu(self)
+        exit_action = make_exit_action(self)
+        open_settings_action = make_open_settings_action(self)
+        menu.addAction(open_settings_action)
+        menu.addAction(exit_action)
+        menu.exec(event.globalPos())
+
     def __init__(self):
         super().__init__()
 
         self.mascot_size = [128, 128]
         self.taskbar_size = (QDesktopWidget().screenGeometry().height()
                              - QDesktopWidget().availableGeometry().height())
-        self.screen_size = QtWidgets.QDesktopWidget().screenGeometry()
+        self.screen_size = QDesktopWidget().screenGeometry()
 
-        self.popup_menu = PopupMenu(self)
 
         self.current_position = QPoint(*[self.screen_size.width() - self.mascot_size[0],
                                          self.screen_size.height() - self.mascot_size[1] - self.taskbar_size])
@@ -24,10 +38,10 @@ class Window(QMainWindow):
 
         # Налаштування вікна
         self.setWindowTitle('Steppy')
-        self.setWindowIcon(QtGui.QIcon('cat256.png'))
-        self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
-        self.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint)
-        self.setAttribute(QtCore.Qt.WidgetAttribute(0x78))
+        self.setWindowIcon(QIcon('cat256.png'))
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
+        self.setAttribute(Qt.WidgetAttribute(0x78))
         self.setAutoFillBackground(True)
 
         # Ставимо зображення
@@ -39,72 +53,17 @@ class Window(QMainWindow):
 
         self.show()
 
-    def mousePressEvent(self, event: QtGui.QMouseEvent):
-        self.current_position = event.globalPos()
-
-        if event.button() == QtCore.Qt.RightButton:
-            self.popup_menu.show()
-            self.popup_menu.set_pos(QPoint(event.globalPos().x(),
-                                           self.pos().y() - self.popup_menu.height()))
-
-    def mouseMoveEvent(self, event: QtGui.QMouseEvent):
+    def mouseMoveEvent(self, event: QMouseEvent):
         delta = QPoint(event.globalPos() - self.current_position)
         self.move(self.x() + delta.x(), self.y() + delta.y())
         self.current_position = event.globalPos()
 
 
-class PopupMenu(QtWidgets.QMenu):
-    def __init__(self, parent=None):
-        super(PopupMenu, self).__init__(parent)
-        self.layout = QtWidgets.QVBoxLayout()
-        self.setWindowFlag(QtCore.Qt.WindowType.WindowStaysOnTopHint)
-
-        widgets = [
-            PopupButtonLabel("search", self.showMenu, self), # пхаємо функцію на лейбл
-            PopupButtonLabel("create tips", None, self),
-            PopupButtonLabel("make notes", None, self),
-            ExitButton("Exit", self)
-        ]
-        for widget in widgets:
-            self.layout.addWidget(widget)
-        self.layout.addStretch()
-        self.setLayout(self.layout)
-
-    def showMenu(self):
-        aboba = QMenu(self)
-        aboba.setGeometry(500, 500, 500, 500)
-        aboba.show()
-
-    def set_pos(self, point: QPoint):
-        self.setGeometry(point.x() - 50, point.y() - 10, 100, 100)
-
-
-class PopupButton(QPushButton):
-    def __init__(self, text: str, parent=None):
-        super(PopupButton, self).__init__(parent)
-        self.setText(text)
-
-
-class PopupButtonLabel(QLabel):
-    def __init__(self, text: str, func=None, parent=None):
-        super(QLabel, self).__init__(parent)
-        self.setText(text)
-        self.func = func
-
-    def mousePressEvent(self, event):
-        if self.func is not None:
-            self.func()
-
-
-class ExitButton(PopupButtonLabel):
-    def __init__(self, text: str, parent=None):
-        super(PopupButtonLabel, self).__init__(text, parent)
-
-    def mousePressEvent(self, event, q_mouse_event=None):
-        sys.exit()
+def main():
+    app = QApplication(sys.argv)
+    steppy = Steppy()
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':
-    App = QApplication(sys.argv)
-    window = Window()
-    sys.exit(App.exec())
+    main()
