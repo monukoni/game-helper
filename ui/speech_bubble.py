@@ -5,8 +5,7 @@ from PyQt5.QtCore import Qt, QRect, QTimer
 
 import random
 
-TIPS = ["А ви знали що маніяки завжди підари?", "А ви знали що маніяки завжди підари????",
-        "А ви знали що маніяки завжди підари!!!!!"]
+TIPS = ["Tip# 1", "Tip# 2", "Tip# 3", "Tip# 4", "Tip# 5", "Tip# 6", "Tip# 7", "Tip# 8", "Tip# 9"]
 MARGIN_TOP = 20
 
 
@@ -19,8 +18,8 @@ class SpeechBubble(QtWidgets.QWidget):
                   app.pos().y() - self.height())
         self.label = QLabel(self)
         self.set_window_flags()
-        self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
-        self.set_image_background()
+        # self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
+        # self.set_image_background()
         self.set_text(TIPS[0])
         self.timer = QTimer()
         self.timer.setInterval(self.app.settings.delay*1000)
@@ -35,12 +34,16 @@ class SpeechBubble(QtWidgets.QWidget):
         self.setAttribute(Qt.WidgetAttribute(0x78))
         self.setAutoFillBackground(True)
 
-    def set_image_background(self):
+    # def set_image_background(self):
+    #     self.pixmap = self.pixmap.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+    #     self.label.setPixmap(self.pixmap)
+    #     self.label.resize(self.width(), self.height())
+
+    def set_text(self, text):
+        self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
         self.pixmap = self.pixmap.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
         self.label.setPixmap(self.pixmap)
         self.label.resize(self.width(), self.height())
-
-    def set_text(self, text):
         painter = QtGui.QPainter(self.pixmap)
         painter.setPen(QtGui.QPen(QtGui.QColor("black")))
         painter.setFont(QtGui.QFont("Arial", 18))
