@@ -1,23 +1,31 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5.QtGui import QImage, QPixmap, QIcon, QFont
-from PyQt5.QtWidgets import QLabel, QMainWindow, QHBoxLayout, QWidget, QVBoxLayout
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt5.QtCore import Qt, QRect, QTimer
+
+import random
+
+TIPS = ["А ви знали що маніяки завжди підари?", "А ви знали що маніяки завжди підари????",
+        "А ви знали що маніяки завжди підари!!!!!"]
+MARGIN_TOP = 20
 
 
 class SpeechBubble(QtWidgets.QWidget):
     def __init__(self, app: QMainWindow):
         super().__init__()
         self.app = app
-        # todo: Add normal geometry
         self.setFixedSize(200, 200)
-
         self.move(app.pos().x() - int(self.width() / 2),
                   app.pos().y() - self.height())
-
+        self.label = QLabel(self)
         self.set_window_flags()
+        self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
         self.set_image_background()
-        self.set_text("А ви знали що маніяки завжди підари?")
-
+        self.set_text(TIPS[0])
+        self.timer = QTimer()
+        self.timer.setInterval(self.app.settings.delay*1000)
+        self.timer.timeout.connect(self.rotate_tips)
+        self.timer.start()
 
     def set_window_flags(self):
         self.setWindowTitle('Steppy talking')
@@ -28,29 +36,28 @@ class SpeechBubble(QtWidgets.QWidget):
         self.setAutoFillBackground(True)
 
     def set_image_background(self):
-        self.img = QLabel(self)
-        transparent_img = QImage()
-        transparent_img.load(f'assets/speech_bubble_right.png')
-        image = QPixmap.fromImage(transparent_img)
-        image = image.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
-        self.img.setPixmap(image)
-        self.img.resize(self.width(), self.height())
-
+        self.pixmap = self.pixmap.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        self.label.setPixmap(self.pixmap)
+        self.label.resize(self.width(), self.height())
 
     def set_text(self, text):
-        label = QtWidgets.QLabel(self)
-        # wlayout = QtWidgets.QVBoxLayout()
-        label.setText(text)
-        label.setFont(QFont('Arial', 10))
-        label.setWordWrap(True)
+        painter = QtGui.QPainter(self.pixmap)
+        painter.setPen(QtGui.QPen(QtGui.QColor("black")))
+        painter.setFont(QtGui.QFont("Arial", 18))
 
-        # label.setAlignment(Qt.AlignCenter)
-        # label.move(10, 10)
-        label.setGeometry(10, 10, 170, 130)
-        # layout.addWidget(label)
+        # todo: create layout, create text, and dynamically set pixmap w/h based on text length
+        rect: QRect = self.pixmap.rect()
+        painter.drawText(rect.x(), rect.y() + MARGIN_TOP, rect.width(), rect.height(),
+                         QtCore.Qt.AlignHCenter | QtCore.Qt.TextWordWrap, text)
+        painter.end()
+        self.label.setWordWrap(True)
+        self.label.setPixmap(self.pixmap)
 
-        label.setAlignment(Qt.AlignCenter)
+    def rotate_tips(self):
+        # todo: fix overlapping tips on pixmap
+        next_tip = random.choice(TIPS)
+        self.set_text(next_tip)
 
-
-
+    def closeEvent(self, event):
+        self.timer.stop()
 

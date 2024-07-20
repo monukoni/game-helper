@@ -7,7 +7,6 @@ from dataclasses import dataclass, asdict
 class SteppySettings:
 
     delay: int = 10
-    text_hello: str = 'Qeq'
 
     @classmethod
     def from_file(cls, file_name: str):

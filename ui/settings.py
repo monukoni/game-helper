@@ -29,17 +29,14 @@ class SettingsWindow(QtWidgets.QWidget):
         # Add close button
         close_button_layout = QtWidgets.QHBoxLayout()
         close_button_layout.addStretch()
-        close_button = QPushButton('X')
-        close_button.setStyleSheet(f'border-radius: 250px; border-color: red;')
-        close_button.clicked.connect(self.close)
-        close_button_layout.addWidget(close_button)
-        layout.addLayout(close_button_layout)
-
         save_button = QPushButton('Save')
         save_button.clicked.connect(self.save_settings)
         close_button_layout.addWidget(save_button)
         layout.addLayout(close_button_layout)
-
+        close_button = QPushButton('X')
+        close_button.clicked.connect(self.close)
+        close_button_layout.addWidget(close_button)
+        layout.addLayout(close_button_layout)
         self.setLayout(layout)
         # Center the window on the screen
         self.center()
