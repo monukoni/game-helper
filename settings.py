@@ -5,7 +5,6 @@ from dataclasses import dataclass, asdict
 
 @dataclass
 class SteppySettings:
-
     delay: int = 10
     # todo: save data from game into conf.json
     game: str = "None"

@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel, QPushButton, QLineEdit, QComboBox
+from PyQt5.QtWidgets import QLabel, QPushButton, QLineEdit, QComboBox, QTextEdit
+
 from colors import DEFAULT_MENU_COLOR
 
 
@@ -20,18 +21,25 @@ class SettingsWindow(QtWidgets.QWidget):
         label.setAlignment(Qt.AlignTop)
         layout.addWidget(label)
 
-        self.text_input_layout = QtWidgets.QHBoxLayout()
-        self.text_input = QLineEdit()
-        self.text_input.setPlaceholderText("Введіть ваш текст тут")
-        self.text_input.setAlignment(Qt.AlignLeft)
-        self.text_input_layout.addWidget(self.text_input)
-
         self.combo = QComboBox(self)
         self.combo.addItem("Elden Ring", 2)
         self.combo.addItem("Dead by Daylight", 1)
         self.combo.activated.connect(self.onActivated)
-
         layout.addWidget(self.combo)
+
+        self.note_line_edit = QLineEdit(self)
+        self.note_line_edit.setPlaceholderText("Enter your note here")
+        layout.addWidget(self.note_line_edit)
+
+        self.save_note_button = QPushButton("Save Note")
+        self.save_note_button.pressed.connect(self.save_note)
+        layout.addWidget(self.save_note_button)
+
+        self.text_input_layout = QtWidgets.QHBoxLayout()
+        self.text_input = QLineEdit()
+        self.text_input.setPlaceholderText("Enter your tip here")
+        self.text_input.setAlignment(Qt.AlignLeft)
+        self.text_input_layout.addWidget(self.text_input)
         layout.addWidget(self.text_input)
 
         save_tip_button = QPushButton('Save Tip')
@@ -45,7 +53,6 @@ class SettingsWindow(QtWidgets.QWidget):
         self.spin_box.setRange(0, 100)
         self.spin_box.valueChanged.connect(self.on_delay_value_changed)
         layout.addWidget(self.spin_box)
-
 
         close_button_layout = QtWidgets.QHBoxLayout()
         close_button_layout.addStretch()
@@ -78,9 +85,12 @@ class SettingsWindow(QtWidgets.QWidget):
         text = self.text_input.text()
         self.app.database.insert_tips(text)
 
+    def save_note(self):
+        text = self.note_line_edit.text()
+        self.app.database.insert_notes(text)
+
     def center(self):
         qr = self.frameGeometry()
         cp = QtWidgets.QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
-

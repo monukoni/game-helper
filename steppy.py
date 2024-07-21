@@ -1,11 +1,12 @@
 from PyQt5.QtCore import QPoint
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QImage, QMouseEvent, QIcon
 from PyQt5.QtWidgets import (
     QDesktopWidget, QMainWindow, QMenu, QLabel
 )
-from PyQt5.QtGui import QPixmap, QImage, QMouseEvent, QIcon
-from PyQt5.QtCore import Qt
 
 from colors import DEFAULT_MENU_COLOR
+from db.database import Database
 from settings import SteppySettings
 from ui.actions import (
     make_exit_action,
@@ -13,7 +14,7 @@ from ui.actions import (
 )
 from ui.settings import SettingsWindow
 from ui.speech_bubble import SpeechBubble
-from db.database import Database
+
 
 class Steppy(QMainWindow):
 
@@ -73,17 +74,12 @@ class Steppy(QMainWindow):
     def mousePressEvent(self, event):
         self.current_position = event.globalPos()
 
-
-
-
     def mouseMoveEvent(self, event: QMouseEvent):
         if event.buttons() == Qt.LeftButton:
             if self.speech_bubble.isVisible():
-                self.speech_bubble.move(self.x() - int(self.speech_bubble.width()/2),
+                self.speech_bubble.move(self.x() - int(self.speech_bubble.width() / 2),
                                         self.y() - self.speech_bubble.height())
 
             delta = QPoint(event.globalPos() - self.current_position)
             self.move(self.x() + delta.x(), self.y() + delta.y())
             self.current_position = event.globalPos()
-
-

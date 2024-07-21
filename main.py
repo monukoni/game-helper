@@ -2,11 +2,11 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from steppy import Steppy
 from settings import SteppySettings
+from steppy import Steppy
+
 
 def main():
-
     app = QApplication(sys.argv)
     settings = SteppySettings.from_file('conf.json')
     # print(str(settings))
