@@ -1,26 +1,34 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt5.QtWidgets import QLabel, QMainWindow, QCheckBox, QHBoxLayout
 from PyQt5.QtCore import Qt, QRect, QTimer
-from db.database import Database
 import random
+
+import steppy
 
 MARGIN_TOP = 20
 
 
 class SpeechBubble(QtWidgets.QWidget):
-    def __init__(self, app: QMainWindow):
+    def __init__(self, app):
         super().__init__()
-        database = Database()
-
-        self.TIPS = database.get_tips()
 
         self.app = app
+
+        self.TIPS = self.app.database.get_tips()
+        self.NOTES = self.app.database.get_notes(1)
+
         self.setFixedSize(200, 200)
         self.move(app.pos().x() - int(self.width() / 2),
                   app.pos().y() - self.height())
         self.label = QLabel(self)
         self.set_window_flags()
+
+
+        self.notes_checkbox = QCheckBox('Notes', self)
+        self.notes_checkbox.move(self.width() - 80, self.height() - 80)
+
+
         # self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
         # self.set_image_background()
         self.set_text(self.TIPS[0])
@@ -53,7 +61,10 @@ class SpeechBubble(QtWidgets.QWidget):
 
         # todo: create layout, create text, and dynamically set pixmap w/h based on text length
         rect: QRect = self.pixmap.rect()
-        painter.drawText(rect.x(), rect.y() + MARGIN_TOP, rect.width(), rect.height(),
+
+        # painter.drawText(rect, QtCore.Qt.AlignCenter | QtCore.Qt.TextWordWrap, text)
+        # todo: make normal spawn point
+        painter.drawText(rect.x() + 10, rect.y() + MARGIN_TOP, rect.width()-30, rect.height()-10,
                          QtCore.Qt.AlignHCenter | QtCore.Qt.TextWordWrap, text)
         painter.end()
         self.label.setWordWrap(True)
@@ -61,7 +72,10 @@ class SpeechBubble(QtWidgets.QWidget):
 
     def rotate_tips(self):
         # todo: fix overlapping tips on pixmap
-        next_tip = random.choice(self.TIPS)
+        if self.notes_checkbox.isChecked():
+            next_tip = "\n".join(self.NOTES)
+        else:
+            next_tip = random.choice(self.TIPS)
         self.set_text(next_tip)
 
     def closeEvent(self, event):

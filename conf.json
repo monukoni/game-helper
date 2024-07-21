@@ -1,1 +1,7 @@
-{"delay": 2}
+{
+  "delay": 1,
+  "game": {
+    "name": "Dead by Daylight",
+    "id": 1
+  }
+}

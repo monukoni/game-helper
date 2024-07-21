@@ -93,6 +93,7 @@ fabric.properties
 .venv
 env/
 .venv/
+.venv/*
 .idea
 .idea/
 venv/
@@ -101,3 +102,4 @@ env.bak/
 venv.bak/
 db/*-journal
 db/*.sqbpro
+playground.py

@@ -13,12 +13,14 @@ from ui.actions import (
 )
 from ui.settings import SettingsWindow
 from ui.speech_bubble import SpeechBubble
-
+from db.database import Database
 
 class Steppy(QMainWindow):
 
     def __init__(self, settings: SteppySettings):
         super().__init__()
+        self.database = Database()
+
         self.settings = settings
         self.mascot_size = [128, 128]
         self.taskbar_size = (QDesktopWidget().screenGeometry().height()

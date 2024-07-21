@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QApplication
 
 from steppy import Steppy
 from settings import SteppySettings
-from db.database import Database
 
 def main():
 
