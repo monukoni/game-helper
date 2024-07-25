@@ -12,7 +12,13 @@ def make_exit_action(app: QMainWindow):
     return exit_action
 
 
-def make_open_settings_action(app: QMainWindow):
-    open_settings_action = QAction("Open settings")
-    open_settings_action.triggered.connect(app.settings_window.show)
-    return open_settings_action
+def make_open_notes_action(app: QMainWindow):
+    open_notes_action = QAction("Notes")
+    open_notes_action.triggered.connect(app.notes_window.show)
+    return open_notes_action
+
+
+def make_open_settings_menu_action(app: QMainWindow):
+    open_settings_menu_action = QAction("Settings")
+    open_settings_menu_action.triggered.connect(app.settings_menu_window.show)
+    return open_settings_menu_action

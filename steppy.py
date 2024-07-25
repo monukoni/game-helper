@@ -10,10 +10,12 @@ from db.database import Database
 from settings import SteppySettings
 from ui.actions import (
     make_exit_action,
-    make_open_settings_action
+    make_open_notes_action,
+    make_open_settings_menu_action
 )
-from ui.settings import SettingsWindow
+from ui.notes import NotesWindow
 from ui.speech_bubble import SpeechBubble
+from ui.settings_menu import SettingsMenu
 
 
 class Steppy(QMainWindow):
@@ -39,7 +41,6 @@ class Steppy(QMainWindow):
         self.set_image_background()
         # Set all UI children windows
         self.add_children_windows()
-        self.show()
 
         self.speech_bubble.show()
 
@@ -47,14 +48,17 @@ class Steppy(QMainWindow):
         menu = QMenu(self)
         menu.setStyleSheet(f'background-color: {DEFAULT_MENU_COLOR};')
         exit_action = make_exit_action(self)
-        open_settings_action = make_open_settings_action(self)
-        menu.addAction(open_settings_action)
+        open_notes_action = make_open_notes_action(self)
+        open_settings_menu_action = make_open_settings_menu_action(self)
+        menu.addAction(open_notes_action)
+        menu.addAction(open_settings_menu_action)
         menu.addAction(exit_action)
         menu.exec_(event.globalPos())
 
     def add_children_windows(self):
-        self.settings_window = SettingsWindow(self)
-        self.speech_bubble = SpeechBubble(self)
+        self.notes_window = NotesWindow(self)
+        self.speech_bubble = SpeechBubble(self, self.settings)
+        self.settings_menu_window = SettingsMenu(self.settings)
 
     def set_window_flags(self):
         self.setWindowTitle('Steppy')

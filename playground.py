@@ -1,5 +1,3 @@
-# Tests file, do not touch without permission
-
 import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit

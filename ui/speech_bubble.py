@@ -3,17 +3,19 @@ import random
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import Qt, QRect, QTimer
 from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QLabel, QCheckBox, QTextEdit, QHBoxLayout
+from PyQt5.QtWidgets import QLabel, QCheckBox
+
+from settings import SteppySettings
 
 MARGIN_TOP = 20
 
 
 class SpeechBubble(QtWidgets.QWidget):
-    def __init__(self, app):
+    def __init__(self, app, settings: SteppySettings):
         super().__init__()
 
         self.app = app
-
+        self.settings: SteppySettings = settings
         self.TIPS = self.app.database.get_tips()
         self.NOTES = self.app.database.get_notes(1)
 
@@ -30,10 +32,9 @@ class SpeechBubble(QtWidgets.QWidget):
         # self.set_image_background()
         self.set_text(self.TIPS[0])
         self.timer = QTimer()
-        self.timer.setInterval(self.app.settings.delay * 1000)
+        self.timer.setInterval(self.settings.delay * 1000)
         self.timer.timeout.connect(self.rotate_tips)
         self.timer.start()
-
 
     def set_window_flags(self):
         self.setWindowTitle('Steppy talking')
@@ -48,11 +49,6 @@ class SpeechBubble(QtWidgets.QWidget):
     #     self.label.setPixmap(self.pixmap)
     #     self.label.resize(self.width(), self.height())
 
-    def setText(self, text):
-
-        ...
-
-
     def set_text(self, text):
         self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
         self.pixmap = self.pixmap.scaled(self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
@@ -60,7 +56,7 @@ class SpeechBubble(QtWidgets.QWidget):
         self.label.resize(self.width(), self.height())
         painter = QtGui.QPainter(self.pixmap)
         painter.setPen(QtGui.QPen(QtGui.QColor("black")))
-        painter.setFont(QtGui.QFont("Arial", 8))
+        painter.setFont(QtGui.QFont("Arial", self.settings.speech_buble_font_size))
 
         # todo: create layout, create text, and dynamically set pixmap w/h based on text length
         rect: QRect = self.pixmap.rect()
