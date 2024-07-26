@@ -25,6 +25,13 @@ class Steppy(QMainWindow):
         self.database = Database()
 
         self.settings = settings
+
+        self.GAMES = self.database.get_games()
+        self.current_game = {'id': self.GAMES[0][0], 'name': self.GAMES[0][1], 'proccess_name': self.GAMES[0][2]}
+        self.TIPS = list()
+        self.NOTES = list()
+        self.initialize_tips()
+
         self.mascot_size = [128, 128]
         self.taskbar_size = (QDesktopWidget().screenGeometry().height()
                              - QDesktopWidget().availableGeometry().height())
@@ -35,6 +42,9 @@ class Steppy(QMainWindow):
         self.setGeometry(self.current_position.x(),
                          self.current_position.y(),
                          *self.mascot_size)
+        
+        
+        
         # Налаштування вікна
         self.set_window_flags()
         # Ставимо зображення
@@ -43,6 +53,10 @@ class Steppy(QMainWindow):
         self.add_children_windows()
 
         self.speech_bubble.show()
+
+    def initialize_tips(self):
+        self.TIPS = self.database.get_tips(self.current_game["id"])
+        self.NOTES = self.database.get_notes(self.current_game["id"])
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)

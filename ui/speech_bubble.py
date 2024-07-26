@@ -5,23 +5,34 @@ from PyQt5.QtCore import Qt, QRect, QTimer
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QLabel, QCheckBox
 
+import psutil
+import time
+import threading
+import ctypes
+import multiprocessing
+import time
+import os
+import signal
+import sys
+
+
 from settings import SteppySettings
 
 MARGIN_TOP = 20
 
 
 class SpeechBubble(QtWidgets.QWidget):
-    def __init__(self, app, settings: SteppySettings):
+    def __init__(self, parent_app, settings: SteppySettings):
         super().__init__()
 
-        self.app = app
+        self.parent_app = parent_app
         self.settings: SteppySettings = settings
-        self.TIPS = self.app.database.get_tips()
-        self.NOTES = self.app.database.get_notes(1)
+        
+        self.GAMES = ["spotify"]
 
         self.setFixedSize(200, 200)
-        self.move(app.pos().x() - int(self.width() / 2),
-                  app.pos().y() - self.height())
+        self.move(self.parent_app.pos().x() - int(self.width() / 2),
+                  self.parent_app.pos().y() - self.height())
         self.label = QLabel(self)
         self.set_window_flags()
 
@@ -30,11 +41,23 @@ class SpeechBubble(QtWidgets.QWidget):
 
         # self.pixmap = QPixmap(f'assets/speech_bubble_right.png')
         # self.set_image_background()
-        self.set_text(self.TIPS[0])
-        self.timer = QTimer()
-        self.timer.setInterval(self.settings.delay * 1000)
-        self.timer.timeout.connect(self.rotate_tips)
-        self.timer.start()
+        # self.set_text(self.parent_app.TIPS[0])
+
+        
+        # self.check_proccess_timer = QTimer()
+        # self.check_proccess_timer.setInterval(5000)
+        # self.check_proccess_timer.timeout.connect(self.check_proccess)
+        # self.check_proccess_timer.start()
+        
+        # self.check_proccess_thread_stop = False
+        # self.check_proccess_thread = threading.Thread(target=self.check_proccess)
+        # self.check_proccess_thread.start()
+        
+        self.set_text("Initialize")
+        self.rotate_tips_timer = QTimer()
+        self.rotate_tips_timer.setInterval(self.settings.delay * 1000)
+        self.rotate_tips_timer.timeout.connect(self.rotate_tips)
+        self.rotate_tips_timer.start()
 
     def set_window_flags(self):
         self.setWindowTitle('Steppy talking')
@@ -70,12 +93,28 @@ class SpeechBubble(QtWidgets.QWidget):
         self.label.setPixmap(self.pixmap)
 
     def rotate_tips(self):
-        # todo: fix overlapping tips on pixmap
         if self.notes_checkbox.isChecked():
-            next_tip = "\n".join(self.NOTES)
+            next_tip = "\n".join(self.parent_app.NOTES)
         else:
-            next_tip = random.choice(self.TIPS)
+            next_tip = random.choice(self.parent_app.TIPS)
         self.set_text(next_tip)
 
+    def check_proccess(self):
+        while True:
+            processes = psutil.process_iter(['name'])
+            for process in processes:
+                try:
+                    process_info = process.as_dict(attrs=['name'])
+                    if process_info["name"] in self.GAMES:
+                        print(process_info["name"] )
+                except psutil.Error as ex:
+                    print(ex)
+            
+            
+
     def closeEvent(self, event):
-        self.timer.stop()
+        self.rotate_tips_timer.stop()
+
+
+
+    

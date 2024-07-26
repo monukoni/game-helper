@@ -7,11 +7,11 @@ from colors import DEFAULT_MENU_COLOR
 
 class NotesWindow(QtWidgets.QWidget):
 
-    def __init__(self, app):
+    def __init__(self, parent_app):
         super().__init__()
 
         # todo: fix layout
-        self.app = app
+        self.parent_app = parent_app
         self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
         self.setWindowTitle("Notes")
         self.setGeometry(0, 0, 500, 500)
@@ -21,11 +21,11 @@ class NotesWindow(QtWidgets.QWidget):
         label.setAlignment(Qt.AlignTop)
         layout.addWidget(label)
 
-        self.combo = QComboBox(self)
-        self.combo.addItem("Elden Ring", 2)
-        self.combo.addItem("Dead by Daylight", 1)
-        self.combo.activated.connect(self.onActivated)
-        layout.addWidget(self.combo)
+        self.choose_game_combo = QComboBox(self)
+        print(self.parent_app.GAMES)
+        for games in self.parent_app.GAMES:
+            self.choose_game_combo.addItem(games[1], {"id": games[0],"name": games[1], "proccess_name":games[2]})
+        layout.addWidget(self.choose_game_combo)
 
         self.note_line_edit = QLineEdit(self)
         self.note_line_edit.setPlaceholderText("Enter your note here")
@@ -47,12 +47,12 @@ class NotesWindow(QtWidgets.QWidget):
         layout.addWidget(save_tip_button)
 
         # Add numeric input field
-        self.spin_box = QtWidgets.QSpinBox()
-        self.spin_box.setPrefix('Speech bubble delay:')
-        self.spin_box.setValue(self.app.settings.delay)
-        self.spin_box.setRange(0, 100)
-        self.spin_box.valueChanged.connect(self.on_delay_value_changed)
-        layout.addWidget(self.spin_box)
+        # self.spin_box = QtWidgets.QSpinBox()
+        # self.spin_box.setPrefix('Speech bubble delay:')
+        # self.spin_box.setValue(self.parent_app.settings.delay)
+        # self.spin_box.setRange(0, 100)
+        # self.spin_box.valueChanged.connect(self.on_delay_value_changed)
+        # layout.addWidget(self.spin_box)
 
         close_button_layout = QtWidgets.QHBoxLayout()
         close_button_layout.addStretch()
@@ -70,24 +70,27 @@ class NotesWindow(QtWidgets.QWidget):
         # Center the window on the screen
         self.center()
 
-    def onActivated(self, e):
-        print(self.combo.currentText())
-        print(self.combo.itemData(e))
-
-    def on_delay_value_changed(self, e):
-        self.app.settings.delay = self.spin_box.value()
+    # def on_delay_value_changed(self, e):
+    #     self.parent_app.settings.delay = self.spin_box.value()
 
     def save_settings(self):
-        self.app.settings.save_to_file('conf.json')
+        self.parent_app.settings.save_to_file('conf.json')
+        # print(self.choose_game_combo.itemData())
+        self.parent_app.current_game = self.choose_game_combo.currentData()
+        self.parent_app.initialize_tips()
         self.close()
 
     def save_tip(self):
         text = self.text_input.text()
-        self.app.database.insert_tips(text)
+        game_id = self.choose_game_combo.currentData()["id"]
+        self.parent_app.database.insert_tips(game_id, text)
+        self.parent_app.initialize_tips()
 
     def save_note(self):
         text = self.note_line_edit.text()
-        self.app.database.insert_notes(text)
+        game_id = self.choose_game_combo.currentData()["id"]
+        self.parent_app.database.insert_notes(game_id, text)
+        self.parent_app.initialize_tips()
 
     def center(self):
         qr = self.frameGeometry()

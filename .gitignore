@@ -104,3 +104,7 @@ db/*.sqbpro
 playground.py
 __pycache__/colors.cpython-312.pyc
 __pycache__/settings.cpython-312.pyc
+.vscode/
+.vscode/*
+ui/__pycache__/
+ui/__pycache__/*
